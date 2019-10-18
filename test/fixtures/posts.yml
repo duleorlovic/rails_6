@@ -1,0 +1,8 @@
+DEFAULTS: &DEFAULTS
+  title: $LABEL Name
+  body: $LABEL body
+
+first:
+  <<: *DEFAULTS
+second:
+  <<: *DEFAULTS
