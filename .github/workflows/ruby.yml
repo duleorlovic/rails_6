@@ -7,14 +7,43 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:11
+        env:
+          POSTGRES_USER: rails_6
+          POSTGRES_DB: rails_6_test
+          POSTGRES_PASSWORD: ""
+        ports: ["5432:5432"]
+        # needed because the postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
     - uses: actions/checkout@v1
     - name: Set up Ruby 2.6
       uses: actions/setup-ruby@v1
       with:
         ruby-version: 2.6.x
-    - name: Build and test with Rake
+    - name: Set up Node
+      uses: actions/setup-node@v1
+      with:
+        node-version: 10.13.0
+    - name: Install dependecies
       run: |
+        sudo apt-get -yqq install libpq-dev chromium-chromedriver
         gem install bundler
         bundle install --jobs 4 --retry 3
-        bundle exec rake
+        yarn install
+    - name: Setup test database
+      env:
+        RAILS_ENV: test
+        PGHOST: localhost
+        PGUSER: rails_6
+      run: |
+        bin/rails db:create
+        bin/rails db:migrate
+    - name: Run tests
+      env:
+        RAILS_ENV: test
+        PGHOST: localhost
+        PGUSER: rails_6
+      run: bundle exec rake
