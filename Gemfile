@@ -55,3 +55,5 @@ gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 
 # user authentication
 gem 'devise'
+
+gem 'rubocop'
