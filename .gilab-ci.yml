@@ -1,0 +1,31 @@
+image: ruby:2.6.x
+
+cache:
+  paths:
+    - vendor/bundle
+    - node_modules
+
+services:
+  - postgres:10.1
+
+variables:
+  BUNDLE_PATH: vendor/bundle
+  DISABLE_SPRING: 1
+  DB_HOST: postgres
+
+before_script:
+  - apt-get update -qq && apt-get install -y -qq sqlite3 libsqlite3-dev nodejs
+  - ruby -v
+  - which ruby
+  - gem install bundler --no-document
+  - echo "$RAILS_MASTER_KEY" > config/master.key
+  - bundle install --jobs $(nproc)  "${FLAGS[@]}"
+
+
+rake:
+  script:
+    - bundle exec rake
+
+rubocop:
+  script:
+    - bundle exec rubocop
