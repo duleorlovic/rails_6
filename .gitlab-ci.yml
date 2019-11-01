@@ -8,6 +8,7 @@ services:
 variables:
   BUNDLE_PATH: vendor/bundle
   POSTGRES_DB: database_name
+  RAILS_ENV: test
 
 cache:
   paths:
@@ -19,7 +20,7 @@ before_script:
   - which ruby
 
   - apt-get update -q && apt-get install nodejs -yqq
-  - node -v
+  - nodejs -v
 
    # Install yarn
   - wget -q -O - https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
@@ -35,6 +36,8 @@ tests:
   variables:
     DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/$POSTGRES_DB"
   script:
+    - bundle exec rails assets:precompile
+    - bundle exec rails db:migrate
     - bundle exec rubocop
     - bundle exec rails test
 
