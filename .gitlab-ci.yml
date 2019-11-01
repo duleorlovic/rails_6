@@ -40,6 +40,7 @@ tests:
     - bundle exec rails db:migrate
     - bundle exec rubocop
     - bundle exec rails test
+    - bundle exec rails test:system
 
 # https://gitlab.com/help/ci/environments#complete-example
 deploy_review:
